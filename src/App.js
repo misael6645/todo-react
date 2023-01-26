@@ -1,18 +1,21 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import TodoTitle from './components/TodoTitle'
 import TodoSearch from './components/TodoSearch'
 import TodoList from './components/TodoList'
 import TodoItem from './components/TodoItem'
 import CreateTodoButton from './components/CreateTodoButton'
+import useLocalStorage from './customHook/useLocalStorage'
+import Modal from './components/Modal'
+import TodoForm from './components/TodoForm'
 
 const listTodo = [
   {
     description: 'Hacer mis tareas pendientes',
-    check: true 
+    check: false 
   },
   {
     description: 'Realizar Pendientes',
-    check: true 
+    check: false 
   },
   {
     description: 'Presentar lo realizado',
@@ -21,13 +24,14 @@ const listTodo = [
 ]
 
 function App() {
-  const [ searchValue, setSearchValue ] = useState('')
-  const [ task, setTask ] = useState(listTodo)
+  const [searchValue, setSearchValue] = useState('')
+  const [task, setTask] = useLocalStorage('todos', listTodo)
+  const [openModal, setOpenModal] = useState(false)
 
-  let totalCompleted = task.filter( item => item.check == true).length
+  let totalCompleted = task.filter( item => item.check === true).length
   let todoList = []
 
-  if(searchValue != ''){
+  if(searchValue !== ''){
     const text = searchValue.toLocaleLowerCase();
     todoList = task.filter(item => {
       const todoDescription = item.description.toLowerCase()
@@ -52,6 +56,14 @@ function App() {
     setTask(auxTask)
   }
 
+  const handleModal = () => {
+    setOpenModal(!openModal)
+  }
+
+  useEffect( () => {
+    
+  }, [])
+
   return (
     <div className='content'>
       <TodoTitle />
@@ -72,7 +84,15 @@ function App() {
           />
         ))}
       </TodoList>
-      <CreateTodoButton className='button-create' />
+      <CreateTodoButton 
+        handleModal={handleModal} 
+        className='button-create' 
+      />
+      { openModal ?(
+        <Modal handleModal={handleModal} >
+          <TodoForm />
+        </Modal>
+      ): null }
     </div>
   );
 }

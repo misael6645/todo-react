@@ -1,9 +1,9 @@
 import React from 'react'
 
-const CreatetodoButton = (props) => {
+const CreatetodoButton = ({ handleModal, ...props}) => {
   return (
     <section {...props} >
-      <button className='todo-button'>Agregar Tarea</button>
+      <button onClick={handleModal} className='todo-button'>Agregar Tarea</button>
     </section>
   )
 }
